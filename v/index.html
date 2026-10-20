@@ -215,6 +215,16 @@ function visible() {
   return list.sort(order[$('sort').value] || order.price_desc);
 }
 
+// Miniatura del espejo (ligera); si no existe, la imagen original.
+const THUMBS = 'https://e1potrillo.github.io/riftbound-data/v1/img/';
+function imgTag(m) {
+  if (m.tid) {
+    const fb = m.img ? ` onerror="this.onerror=null;this.src='${esc(m.img)}'"` : '';
+    return `<img loading="lazy" src="${THUMBS}${esc(m.tid)}.jpg"${fb} alt="">`;
+  }
+  return m.img ? `<img loading="lazy" src="${esc(m.img)}" alt="">` : '';
+}
+
 function draw() {
   const list = visible();
   $('count').textContent = list.length + (list.length === 1 ? ' carta' : ' cartas');
@@ -223,7 +233,7 @@ function draw() {
     const n = picked.get(m.i) || 0;
     const tags = [m.f ? 'Foil' : 'Normal', ...(m.tags || [])].join(' · ');
     return `<div class="card${n ? ' sel' : ''}" data-i="${m.i}">
-      <div class="img">${m.img ? `<img loading="lazy" src="${esc(m.img)}" alt="">` : ''}
+      <div class="img">${imgTag(m)}
         ${m.f ? '<span class="foil">FOIL</span>' : ''}${n ? `<span class="pick">${n}</span>` : ''}</div>
       <div class="name">${esc(m.n)}</div>
       <div class="sub">${esc(m.sl)} · ${esc(m.no)}</div>

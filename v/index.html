@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carpeta · Riftbound Tracker</title>
+<meta name="description" content="Cartas de Riftbound TCG en venta, con precios.">
+<meta name="theme-color" content="#0D0D12">
+<link rel="icon" type="image/png" href="../app/favicon.png">
+<style>
+  :root {
+    --bg: #0D0D12; --panel: #15151D; --panel2: #1C1C26; --line: #2A2A36;
+    --text: #ECEAF2; --muted: #8B88A0; --accent: #E0A23B; --ok: #2ECC71;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  a { color: inherit; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 16px 16px 120px; }
+
+  header { padding: 8px 0 14px; }
+  .kicker { color: var(--muted); font-size: 11px; letter-spacing: 2px; font-weight: 700; }
+  h1 { margin: 2px 0 4px; font-size: 28px; color: var(--accent); overflow-wrap: anywhere; }
+  .meta { color: var(--muted); font-size: 13px; }
+  .contact { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; border-radius: 10px;
+    padding: 9px 14px; font-size: 14px; font-weight: 700; text-decoration: none;
+    border: 1px solid var(--line); background: var(--panel); color: var(--text); cursor: pointer; }
+  .btn.wa { background: #1FA855; border-color: #1FA855; color: #fff; }
+  .btn.fb { background: #1877F2; border-color: #1877F2; color: #fff; }
+
+  .filters { position: sticky; top: 0; z-index: 5; background: var(--bg);
+    padding: 10px 0; border-bottom: 1px solid var(--line); margin-bottom: 14px;
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .filters input, .filters select {
+    background: var(--panel); color: var(--text); border: 1px solid var(--line);
+    border-radius: 10px; padding: 9px 10px; font-size: 14px; min-width: 0; }
+  .filters .search { flex: 1 1 220px; }
+  .filters .price { width: 92px; }
+  .count { color: var(--accent); font-size: 13px; font-weight: 700; margin-left: auto; }
+
+  .grid { display: grid; gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  @media (max-width: 420px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+    padding: 8px; display: flex; flex-direction: column; cursor: pointer;
+    transition: border-color .12s; position: relative; }
+  .card.sel { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent) inset; }
+  .img { aspect-ratio: 63 / 88; border-radius: 8px; overflow: hidden; background: var(--panel2);
+    position: relative; }
+  .img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .foil { position: absolute; top: 4px; right: 4px; font-size: 9px; font-weight: 800;
+    color: #fff; padding: 2px 6px; border-radius: 6px;
+    background: linear-gradient(90deg, #7B5CD6, #4A9BD6, #52C08A); }
+  .pick { position: absolute; top: 4px; left: 4px; background: var(--accent); color: var(--bg);
+    font-size: 12px; font-weight: 900; border-radius: 12px; padding: 2px 8px; }
+  .name { font-size: 13.5px; font-weight: 700; margin-top: 7px; line-height: 1.2;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .sub { color: var(--muted); font-size: 11.5px; margin-top: 2px; }
+  .row { display: flex; align-items: flex-end; justify-content: space-between; margin-top: auto;
+    padding-top: 6px; gap: 6px; }
+  .qty { color: var(--muted); font-size: 11.5px; }
+  .price-tag { color: var(--accent); font-weight: 800; font-size: 15px; }
+  .stepper { display: none; align-items: center; gap: 8px; margin-top: 6px; }
+  .card.sel .stepper { display: flex; }
+  .stepper button { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line);
+    background: var(--panel2); color: var(--text); font-size: 16px; cursor: pointer; }
+  .stepper span { font-weight: 800; min-width: 18px; text-align: center; }
+
+  .bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; padding: 10px 16px 14px;
+    background: linear-gradient(transparent, var(--bg) 30%); display: none; }
+  .bar.on { display: block; }
+  .bar .inner { max-width: 640px; margin: 0 auto; background: var(--panel2);
+    border: 1px solid var(--line); border-radius: 18px; padding: 10px 10px 10px 16px;
+    display: flex; align-items: center; gap: 10px; box-shadow: 0 6px 24px #000a; }
+  .bar .sum { flex: 1; }
+  .bar .sum b { display: block; font-size: 17px; }
+  .bar .sum small { color: var(--muted); }
+
+  .state { text-align: center; color: var(--muted); padding: 60px 20px; font-size: 15px; }
+  footer { text-align: center; color: var(--muted); font-size: 11px; letter-spacing: 1.4px;
+    margin-top: 30px; }
+  footer i { color: var(--accent); font-weight: 700; letter-spacing: .4px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header id="head" hidden>
+    <div class="kicker">CARPETA DE</div>
+    <h1 id="name"></h1>
+    <div class="meta" id="meta"></div>
+    <div class="contact" id="contact"></div>
+  </header>
+
+  <div class="filters" id="filters" hidden>
+    <input class="search" id="q" type="search" placeholder="Buscar carta...">
+    <select id="set"><option value="">Todos los sets</option></select>
+    <select id="dom"><option value="">Todos los dominios</option></select>
+    <select id="foil">
+      <option value="">Normal y foil</option>
+      <option value="0">Solo normal</option>
+      <option value="1">Solo foil</option>
+    </select>
+    <input class="price" id="min" type="number" min="0" placeholder="$ mín">
+    <input class="price" id="max" type="number" min="0" placeholder="$ máx">
+    <select id="sort">
+      <option value="price_desc">Precio: mayor a menor</option>
+      <option value="price_asc">Precio: menor a mayor</option>
+      <option value="name">Nombre</option>
+      <option value="set">Set y número</option>
+    </select>
+    <span class="count" id="count"></span>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <div class="state" id="state">Cargando carpeta...</div>
+
+  <footer>POWERED BY <i>E1Potrillo</i> · RIFTBOUND TRACKER</footer>
+</div>
+
+<div class="bar" id="bar">
+  <div class="inner">
+    <div class="sum"><b id="sumTotal"></b><small id="sumCount"></small></div>
+    <button class="btn" id="clear">Quitar</button>
+    <a class="btn wa" id="ask" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+  </div>
+</div>
+
+<script>
+// Datos públicos de Supabase: la llave "publishable" está hecha para ir en
+// páginas web; solo puede leer las vitrinas publicadas.
+const SUPABASE_URL = 'https://luvxgjpirxmhdhfzzyfj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_wQUL9uMpPMAFbQVE0BUsWg_PIHe581j';
+
+const $ = (id) => document.getElementById(id);
+const money = (v) => '$' + v.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) =>
+  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+let V = null, items = [], picked = new Map(); // idx → cantidad
+const setRank = {}; // orden de los sets como los manda la app
+
+function ago(iso) {
+  const h = (Date.now() - new Date(iso).getTime()) / 36e5;
+  if (h < 1) return 'hace un momento';
+  if (h < 24) return 'hace ' + Math.floor(h) + ' h';
+  const d = Math.floor(h / 24);
+  return d === 1 ? 'ayer' : 'hace ' + d + ' días';
+}
+
+async function load() {
+  const slug = new URLSearchParams(location.search).get('u');
+  if (!slug) { $('state').textContent = 'Falta el nombre de la carpeta en el enlace.'; return; }
+  try {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/vitrinas?slug=eq.' + encodeURIComponent(slug) +
+        '&select=display_name,whatsapp,facebook,sort,items,updated_at',
+        { headers: { apikey: SUPABASE_KEY } });
+    const rows = await res.json();
+    if (!res.ok || !Array.isArray(rows) || !rows.length) {
+      $('state').textContent = 'Esta carpeta no existe o ya no está publicada.';
+      return;
+    }
+    V = rows[0];
+    items = (V.items || []).map((m, i) => ({ ...m, i }));
+  } catch (e) {
+    $('state').textContent = 'No se pudo cargar la carpeta. Revisa tu conexión.';
+    return;
+  }
+  render();
+}
+
+function render() {
+  document.title = 'Carpeta de: ' + V.display_name;
+  $('name').textContent = V.display_name;
+  const copies = items.reduce((s, m) => s + (m.q || 0), 0);
+  $('meta').textContent = copies + (copies === 1 ? ' carta' : ' cartas') +
+      ' en venta · actualizada ' + ago(V.updated_at);
+  const c = $('contact');
+  if (V.whatsapp) c.insertAdjacentHTML('beforeend',
+      `<a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/${esc(V.whatsapp)}">WhatsApp</a>`);
+  if (V.facebook) c.insertAdjacentHTML('beforeend',
+      `<a class="btn fb" target="_blank" rel="noopener" href="${esc(V.facebook)}">Facebook</a>`);
+  if (!V.whatsapp) $('ask').style.display = 'none';
+
+  const sets = new Map(), doms = new Set();
+  const known = ['OGN', 'OGS', 'SFD', 'UNL', 'VEN', 'RAD'];
+  for (const m of items) { sets.set(m.set, m.sl); (m.d || []).forEach((d) => doms.add(d)); }
+  for (const k of sets.keys()) setRank[k] = known.includes(k) ? known.indexOf(k) : 99;
+  for (const [k, v] of sets) $('set').insertAdjacentHTML('beforeend', `<option value="${esc(k)}">${esc(v)}</option>`);
+  for (const d of [...doms].sort()) $('dom').insertAdjacentHTML('beforeend',
+      `<option value="${esc(d)}">${d === 'Colorless' ? 'Incoloras' : esc(d)}</option>`);
+  $('sort').value = V.sort || 'price_desc';
+
+  $('head').hidden = false;
+  $('filters').hidden = false;
+  for (const id of ['q', 'set', 'dom', 'foil', 'min', 'max', 'sort']) $(id).addEventListener('input', draw);
+  draw();
+}
+
+function visible() {
+  const q = $('q').value.trim().toLowerCase(), set = $('set').value, dom = $('dom').value,
+        foil = $('foil').value, min = parseFloat($('min').value), max = parseFloat($('max').value);
+  const list = items.filter((m) =>
+    (!q || m.n.toLowerCase().includes(q) || (m.no || '').toLowerCase().includes(q)) &&
+    (!set || m.set === set) &&
+    (!dom || (m.d || []).includes(dom)) &&
+    (foil === '' || (foil === '1') === !!m.f) &&
+    (isNaN(min) || (m.p ?? -1) >= min) &&
+    (isNaN(max) || (m.p != null && m.p <= max)));
+  const p = (m) => m.p ?? -1;
+  const order = { price_desc: (a, b) => p(b) - p(a),
+                  price_asc: (a, b) => (p(a) < 0 || p(b) < 0) ? p(b) - p(a) : p(a) - p(b),
+                  name: (a, b) => a.n.localeCompare(b.n),
+                  set: (a, b) => (setRank[a.set] - setRank[b.set]) || (a.no || '').localeCompare(b.no || '') };
+  return list.sort(order[$('sort').value] || order.price_desc);
+}
+
+function draw() {
+  const list = visible();
+  $('count').textContent = list.length + (list.length === 1 ? ' carta' : ' cartas');
+  $('state').textContent = list.length ? '' : (items.length ? 'Nada coincide con tu búsqueda.' : 'Esta carpeta está vacía por ahora.');
+  $('grid').innerHTML = list.map((m) => {
+    const n = picked.get(m.i) || 0;
+    const tags = [m.f ? 'Foil' : 'Normal', ...(m.tags || [])].join(' · ');
+    return `<div class="card${n ? ' sel' : ''}" data-i="${m.i}">
+      <div class="img">${m.img ? `<img loading="lazy" src="${esc(m.img)}" alt="">` : ''}
+        ${m.f ? '<span class="foil">FOIL</span>' : ''}${n ? `<span class="pick">${n}</span>` : ''}</div>
+      <div class="name">${esc(m.n)}</div>
+      <div class="sub">${esc(m.sl)} · ${esc(m.no)}</div>
+      <div class="sub">${esc(tags)}</div>
+      <div class="row"><span class="qty">Disponibles: ${m.q}</span>
+        <span class="price-tag">${m.p == null ? 'A tratar' : money(m.p)}</span></div>
+      <div class="stepper"><button data-d="-1">−</button><span>${n}</span><button data-d="1">+</button></div>
+    </div>`;
+  }).join('');
+  bar();
+}
+
+$('grid').addEventListener('click', (e) => {
+  const card = e.target.closest('.card');
+  if (!card) return;
+  const i = +card.dataset.i, m = items[i], cur = picked.get(i) || 0;
+  const d = e.target.dataset.d ? +e.target.dataset.d : (cur ? 0 : 1);
+  const next = Math.max(0, Math.min(m.q, cur + d));
+  if (next) picked.set(i, next); else picked.delete(i);
+  draw();
+});
+
+function bar() {
+  let total = 0, count = 0, priced = true, lines = [];
+  for (const [i, n] of picked) {
+    const m = items[i];
+    count += n;
+    if (m.p == null) priced = false; else total += m.p * n;
+    lines.push(`${n}x ${m.n}${m.f ? ' (Foil)' : ''} · ${m.sl} ${m.no} — ${m.p == null ? 'a tratar' : money(m.p)}`);
+  }
+  $('bar').classList.toggle('on', count > 0);
+  $('sumTotal').textContent = money(total) + ' MXN' + (priced ? '' : ' + a tratar');
+  $('sumCount').textContent = count + (count === 1 ? ' carta seleccionada' : ' cartas seleccionadas');
+  if (V && V.whatsapp) {
+    const text = `Hola, vi tu carpeta en Riftbound Tracker. Me interesan:\n${lines.join('\n')}\n\nTotal: ${money(total)} MXN`;
+    $('ask').href = `https://wa.me/${V.whatsapp}?text=${encodeURIComponent(text)}`;
+  }
+}
+
+$('clear').addEventListener('click', () => { picked.clear(); draw(); });
+load();
+</script>
+</body>
+</html>

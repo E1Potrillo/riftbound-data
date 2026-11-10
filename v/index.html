@@ -216,7 +216,8 @@ function visible() {
 }
 
 // Miniatura del espejo (ligera); si no existe, la imagen original.
-const THUMBS = 'https://e1potrillo.github.io/riftbound-data/v1/img/';
+// Mismo sitio donde se abrió la vitrina (Cloudflare o GitHub Pages).
+const THUMBS = location.origin + (location.hostname.endsWith('github.io') ? '/riftbound-data' : '') + '/v1/img/';
 function imgTag(m) {
   if (m.tid) {
     const fb = m.img ? ` onerror="this.onerror=null;this.src='${esc(m.img)}'"` : '';

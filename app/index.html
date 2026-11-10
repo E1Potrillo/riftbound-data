@@ -61,6 +61,59 @@
       setTimeout(function () { s.remove(); }, 300);
     });
   </script>
+  <script>
+    // Pantalla negra al volver a la app (incidencia 2026-11-05): al pasar a
+    // segundo plano, el navegador (sobre todo Safari en iPhone) puede liberar
+    // el canvas WebGL de Flutter y al volver solo quedan las imagenes <img>.
+    // Si el contexto no se recupera solo, se recarga la pagina. Tambien si la
+    // pagina vuelve desde la cache de atras/adelante del navegador.
+    (function () {
+      var KEY = 'rt_reload_at';
+      function reload() {
+        try {
+          var last = +sessionStorage.getItem(KEY) || 0;
+          if (Date.now() - last < 15000) return; // evita recargas en bucle
+          sessionStorage.setItem(KEY, String(Date.now()));
+        } catch (e) {}
+        location.reload();
+      }
+      window.addEventListener('webglcontextlost', function (ev) {
+        var canvas = ev.target, restored = false;
+        canvas.addEventListener('webglcontextrestored', function () {
+          restored = true;
+        }, { once: true });
+        function check() {
+          // Flutter tambien suelta contextos de canvas que ya no usa: solo
+          // cuenta si el canvas sigue en la pagina.
+          if (restored || !canvas.isConnected) return;
+          if (document.visibilityState !== 'visible') {
+            document.addEventListener('visibilitychange', function () {
+              setTimeout(check, 2000);
+            }, { once: true });
+            return;
+          }
+          reload();
+        }
+        setTimeout(check, 2000);
+      }, true);
+      window.addEventListener('pageshow', function (ev) {
+        if (ev.persisted) reload();
+      });
+      // iPhone/iPad: Flutter dibuja en un OffscreenCanvas y la perdida del
+      // contexto no siempre llega aqui. Si la app estuvo en segundo plano
+      // 10 minutos o mas, se recarga al volver (los datos estan guardados).
+      var ios = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+          (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      var hiddenAt = 0;
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'hidden') {
+          hiddenAt = Date.now();
+        } else if (ios && hiddenAt && Date.now() - hiddenAt >= 10 * 60 * 1000) {
+          reload();
+        }
+      });
+    })();
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

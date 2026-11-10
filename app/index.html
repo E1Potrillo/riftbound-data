@@ -8,7 +8,7 @@
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Tu colección de Riftbound TCG: cartas, precios de TCGplayer en MXN, decks, trades y lista WTS, sincronizados entre tus dispositivos.">
-  <meta name="theme-color" content="#0D0D12">
+  <meta name="theme-color" content="#16171A">
 
   <!-- Instalar como app (Android / iPhone) -->
   <meta name="mobile-web-app-capable" content="yes">
@@ -23,24 +23,24 @@
   <link rel="manifest" href="manifest.json">
 
   <style>
-    html, body { margin: 0; height: 100%; background: #0D0D12; }
+    html, body { margin: 0; height: 100%; background: #16171A; }
     /* Pantalla de carga: se quita cuando Flutter dibuja el primer cuadro. */
     #splash {
       position: fixed; inset: 0; display: flex; flex-direction: column;
       align-items: center; justify-content: center; gap: 18px;
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      color: #ECEAF2; transition: opacity .25s ease;
+      color: #ECEDEE; transition: opacity .25s ease;
     }
     #splash img { width: 96px; height: 96px; }
     #splash .name { font-size: 22px; letter-spacing: .2px; }
-    #splash .name b { color: #E0A23B; font-weight: 600; }
-    #splash .by { margin-top: -10px; font-size: 11px; letter-spacing: 1.6px; color: #8B88A0; }
-    #splash .by i { font-size: 12.5px; letter-spacing: .4px; color: #E0A23B; font-weight: 700; }
+    #splash .name b { color: #ECEDEE; font-weight: 600; }
+    #splash .by { margin-top: -10px; font-size: 11px; letter-spacing: 1.6px; color: #9A9FA8; }
+    #splash .by i { font-size: 12.5px; letter-spacing: .4px; color: #ECEDEE; font-weight: 700; }
     #splash .bar {
-      width: 140px; height: 3px; border-radius: 2px; background: #2A2A36; overflow: hidden;
+      width: 140px; height: 3px; border-radius: 2px; background: #2C2F35; overflow: hidden;
     }
     #splash .bar::after {
-      content: ""; display: block; width: 40%; height: 100%; background: #E0A23B;
+      content: ""; display: block; width: 40%; height: 100%; background: #ECEDEE;
       animation: load 1.1s ease-in-out infinite;
     }
     @keyframes load { from { transform: translateX(-100%); } to { transform: translateX(250%); } }

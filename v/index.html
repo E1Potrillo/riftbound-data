@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Carpeta · Riftbound Tracker</title>
+<title>Carpeta · My Rift</title>
 <meta name="description" content="Cartas de Riftbound TCG en venta, con precios.">
 <meta name="theme-color" content="#0D0D12">
 <link rel="icon" type="image/png" href="../app/favicon.png">
@@ -81,6 +81,7 @@
   footer { text-align: center; color: var(--muted); font-size: 11px; letter-spacing: 1.4px;
     margin-top: 30px; }
   footer i { color: var(--accent); font-weight: 700; letter-spacing: .4px; }
+  footer .legal { display: block; margin-top: 8px; font-size: 10px; letter-spacing: 0; opacity: .8; }
 </style>
 </head>
 <body>
@@ -115,7 +116,7 @@
   <div class="grid" id="grid"></div>
   <div class="state" id="state">Cargando carpeta...</div>
 
-  <footer>POWERED BY <i>E1Potrillo</i> · RIFTBOUND TRACKER</footer>
+  <footer>POWERED BY <i>E1Potrillo</i> · MY RIFT<br><small class="legal">My Rift was created under Riot Games' &quot;Legal Jibber Jabber&quot; policy using assets owned by Riot Games. Riot Games does not endorse or sponsor this project.</small></footer>
 </div>
 
 <div class="bar" id="bar">
@@ -269,7 +270,7 @@ function bar() {
   $('sumTotal').textContent = money(total) + ' MXN' + (priced ? '' : ' + a tratar');
   $('sumCount').textContent = count + (count === 1 ? ' carta seleccionada' : ' cartas seleccionadas');
   if (V && V.whatsapp) {
-    const text = `Hola, vi tu carpeta en Riftbound Tracker. Me interesan:\n${lines.join('\n')}\n\nTotal: ${money(total)} MXN`;
+    const text = `Hola, vi tu carpeta en My Rift. Me interesan:\n${lines.join('\n')}\n\nTotal: ${money(total)} MXN`;
     $('ask').href = `https://wa.me/${V.whatsapp}?text=${encodeURIComponent(text)}`;
   }
 }

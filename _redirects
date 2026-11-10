@@ -1,3 +1,5 @@
 # Cloudflare Pages: la app se compila con la ruta /riftbound-data/app/ (la de
 # GitHub Pages). Aqui esas rutas sirven los mismos archivos de la raiz.
 /riftbound-data/* /:splat 200
+# La raiz del sitio lleva a la app (la direccion corta para compartir).
+/ /app/ 302

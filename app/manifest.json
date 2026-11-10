@@ -1,6 +1,6 @@
 {
-    "name": "Riftbound Tracker",
-    "short_name": "Riftbound",
+    "name": "My Rift",
+    "short_name": "My Rift",
     "id": "./",
     "start_url": ".",
     "scope": ".",
